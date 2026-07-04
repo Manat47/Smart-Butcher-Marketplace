@@ -10,6 +10,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { StoreModule } from './modules/store/store.module';
 import { ReviewModule } from './modules/review/review.module';
 import { AiModule } from './modules/ai/ai.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -27,5 +29,7 @@ import { AiModule } from './modules/ai/ai.module';
     ReviewModule,
     AiModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
