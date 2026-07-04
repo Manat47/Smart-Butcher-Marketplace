@@ -239,7 +239,7 @@ export function usePaymentCheckout() {
 
       const method = editingAddressId ? "PATCH" : "POST";
       const url = editingAddressId
-        ? `${API_URL}/${editingAddressId}` // Wait, original code was `${API_URL}/${editingAddressId}`
+        ? `${API_URL}/users/address/${editingAddressId}`
         : `${API_URL}/users/address`;
 
       const res = await fetch(url, {
