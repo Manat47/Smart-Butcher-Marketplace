@@ -10,13 +10,27 @@ import { VerifyPaymentDto } from './dto/verify-payment.dto';
 export class PaymentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async processSlipUpload(userId: number, orderId: number, amount: number, slipImageUrl: string) {
+  async processSlipUpload(
+    userId: number,
+    orderId: number,
+    amount: number,
+    slipImageUrl: string,
+  ) {
     const order = await this.prisma.order.findFirst({
       where: { id: orderId, userId: userId },
     });
 
     if (!order) {
       throw new BadRequestException('ไม่พบคำสั่งซื้อนี้ในระบบ');
+    }
+
+    const existingPendingPayment = await this.prisma.payment.findFirst({
+      where: { orderId, status: 'PENDING' },
+    });
+    if (existingPendingPayment) {
+      throw new BadRequestException(
+        'คำสั่งซื้อนี้มีสลิปรอการตรวจสอบอยู่แล้ว กรุณารอแอดมินตรวจสอบก่อน',
+      );
     }
 
     const payment = await this.prisma.payment.create({
@@ -56,9 +70,15 @@ export class PaymentService {
     if (!payment) {
       throw new NotFoundException('ไม่พบข้อมูลสลิปการชำระเงินนี้');
     }
-    
+
+    if (payment.status !== 'PENDING') {
+      throw new BadRequestException(
+        `สลิปใบนี้ถูกตรวจสอบไปแล้ว (สถานะปัจจุบัน: ${payment.status})`,
+      );
+    }
+
     const newOrderStatus = status === 'VERIFIED' ? 'PAID' : 'CANCELLED';
-    
+
     const prismaOperations: any[] = [
       this.prisma.payment.update({
         where: { id: paymentId },
@@ -74,7 +94,10 @@ export class PaymentService {
       const storeEarnings = new Map<number, number>();
       for (const item of payment.order.orderItems) {
         const storeId = item.product.storeId;
-        storeEarnings.set(storeId, (storeEarnings.get(storeId) || 0) + item.subtotal);
+        storeEarnings.set(
+          storeId,
+          (storeEarnings.get(storeId) || 0) + item.subtotal,
+        );
       }
 
       for (const [storeId, amount] of storeEarnings.entries()) {
@@ -85,7 +108,7 @@ export class PaymentService {
               balance: { increment: amount },
               totalSales: { increment: amount },
             },
-          })
+          }),
         );
         prismaOperations.push(
           this.prisma.storeTransaction.create({
@@ -94,17 +117,28 @@ export class PaymentService {
               amount: amount,
               description: `รายรับจากคำสั่งซื้อ #${payment.orderId}`,
             },
-          })
+          }),
+        );
+      }
+    } else if (status === 'REJECTED') {
+      for (const item of payment.order.orderItems) {
+        prismaOperations.push(
+          this.prisma.product.update({
+            where: { id: item.productId },
+            data: {
+              stockQuantity: { increment: item.quantity },
+            },
+          }),
         );
       }
     }
 
     const results = await this.prisma.$transaction(prismaOperations);
 
-    return { 
-      message: 'อัปเดตสถานะสำเร็จ', 
-      updatedPayment: results[0], 
-      updatedOrder: results[1] 
+    return {
+      message: 'อัปเดตสถานะสำเร็จ',
+      updatedPayment: results[0],
+      updatedOrder: results[1],
     };
   }
 }
