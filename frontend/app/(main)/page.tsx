@@ -74,6 +74,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchData = async () => {
       try {
         const [catRes, prodRes, revRes] = await Promise.all([
@@ -82,38 +84,44 @@ export default function Home() {
           fetch(`${API_URL}/reviews`),
         ]);
 
-        if (catRes.ok) {
+        if (catRes.ok && prodRes.ok) {
           const cats = await catRes.json();
-          setCategories(cats);
-        }
+          if (isMounted) setCategories(cats);
 
-        if (prodRes.ok) {
           const prods = await prodRes.json();
-          setProducts(Array.isArray(prods) ? prods : (prods.data || []));
-        }
+          if (isMounted) setProducts(Array.isArray(prods) ? prods : (prods.data || []));
 
-        if (revRes.ok) {
-          const revs = await revRes.json();
-          const mappedRevs = revs.map((r: any) => ({
-            id: r.id,
-            name: r.user.fullName,
-            rating: r.point,
-            comment: r.description,
-            image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${r.user.fullName}`,
-            alt: "avatar",
-          }));
-          if (mappedRevs.length > 0) {
-            setTestimonials(mappedRevs);
+          if (revRes.ok) {
+            const revs = await revRes.json();
+            const mappedRevs = revs.map((r: any) => ({
+              id: r.id,
+              name: r.user.fullName,
+              rating: r.point,
+              comment: r.description,
+              image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${r.user.fullName}`,
+              alt: "avatar",
+            }));
+            if (mappedRevs.length > 0 && isMounted) {
+              setTestimonials(mappedRevs);
+            }
           }
+          // เลิกหมุน Loading ก็ต่อเมื่อดึงข้อมูลสำเร็จ 100% เท่านั้น
+          if (isMounted) setIsLoading(false);
+        } else {
+          // ถ้า Server ตอบกลับมาเป็น Error (เช่น 502 Bad Gateway ตอนกำลังตื่น) ให้ลองใหม่ใน 3 วินาที
+          if (isMounted) setTimeout(fetchData, 3000);
         }
       } catch (error) {
-        console.error("Failed to fetch landing page data", error);
-      } finally {
-        setIsLoading(false);
+        // ถ้าเชื่อมต่อไม่ได้เลย (Network Error) ให้ลองใหม่ใน 3 วินาที
+        if (isMounted) setTimeout(fetchData, 3000);
       }
     };
 
     fetchData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const nextTestimonial = () => {
@@ -124,7 +132,6 @@ export default function Home() {
       (prev) => (prev - 1 + testimonials.length) % testimonials.length,
     );
   };
-
 
   return (
     <main>
@@ -171,31 +178,38 @@ export default function Home() {
             Category
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-            {categories.slice(0, 6).map((category, index) => (
-              <Link
-                key={category.id}
-                href={`/shop?category=${encodeURIComponent(category.name)}`}
-                className="block relative w-full sm:w-80 overflow-hidden hover:shadow-xl transition-shadow group border border-gray-200 rounded-xl bg-white"
-              >
-                <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
-                  <img
-                    src={
-                      categoryFallbackImages[
-                      index % categoryFallbackImages.length
-                      ]
-                    }
-                    alt={category.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            {isLoading
+              ? [...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-full sm:w-80 aspect-4/3 bg-gray-200 animate-pulse rounded-xl"
                   />
-                </div>
+                ))
+              : categories.slice(0, 6).map((category, index) => (
+                  <Link
+                    key={category.id}
+                    href={`/shop?category=${encodeURIComponent(category.name)}`}
+                    className="block relative w-full sm:w-80 overflow-hidden hover:shadow-xl transition-shadow group border border-gray-200 rounded-xl bg-white"
+                  >
+                    <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
+                      <img
+                        src={
+                          categoryFallbackImages[
+                            index % categoryFallbackImages.length
+                          ]
+                        }
+                        alt={category.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
 
-                <div className="flex flex-col items-center justify-center p-4 mt-2">
-                  <h3 className="text-lg font-bold text-[#4E0707] text-center transition-colors duration-300 group-hover:text-[#B4915B]">
-                    {category.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                    <div className="flex flex-col items-center justify-center p-4 mt-2">
+                      <h3 className="text-lg font-bold text-[#4E0707] text-center transition-colors duration-300 group-hover:text-[#B4915B]">
+                        {category.name}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
           </div>
         </div>
       </section>
@@ -318,10 +332,11 @@ export default function Home() {
               <button
                 key={index}
                 onClick={() => setCurrentTestimonial(index)}
-                className={`h-3 rounded-full transition-all ${index === currentTestimonial
+                className={`h-3 rounded-full transition-all ${
+                  index === currentTestimonial
                     ? "w-8 bg-[#4E0707]"
                     : "w-3 bg-gray-400"
-                  }`}
+                }`}
               />
             ))}
           </div>
@@ -329,35 +344,51 @@ export default function Home() {
       </section>
 
       {/* 5. POPULAR PRODUCTS SECTION */}
-      <section id="products" className="snap-start scroll-mt-16 py-10 px-4 md:py-16 md:px-6 bg-white">
+      <section
+        id="products"
+        className="snap-start scroll-mt-16 py-10 px-4 md:py-16 md:px-6 bg-white"
+      >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-center mb-6 md:mb-12 text-[#4E0707]">
             Popular Products
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.slice(0, 4).map((product) => (
-              <Link
-                key={product.id}
-                href={`/product/${product.id}`}
-                className="block relative w-full sm:w-80 overflow-hidden hover:shadow-xl transition-shadow group border border-gray-200 rounded-xl bg-white"
-              >
-                <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow overflow-hidden">
-                  <img
-                    src={product.imageUrl || "mock/beef/วากิว.jpg"}
-                    alt={product.name}
-                    className="w-full h-48 object-cover hover:scale-105 transition-transform"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-[#4E0707] mb-2 truncate">
-                      {product.name}
-                    </h3>
-                    <p className="text-[#B4915B] font-semibold">
-                      ฿{product.price}
-                    </p>
+            {isLoading
+              ? [...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-full sm:w-80 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden animate-pulse"
+                  >
+                    <div className="w-full h-48 bg-gray-200" />
+                    <div className="p-4">
+                      <div className="h-5 bg-gray-200 rounded-md w-3/4 mb-3" />
+                      <div className="h-4 bg-gray-200 rounded-md w-1/4" />
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                ))
+              : products.slice(0, 4).map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    className="block relative w-full sm:w-80 overflow-hidden hover:shadow-xl transition-shadow group border border-gray-200 rounded-xl bg-white"
+                  >
+                    <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow overflow-hidden">
+                      <img
+                        src={product.imageUrl || "mock/beef/วากิว.jpg"}
+                        alt={product.name}
+                        className="w-full h-48 object-cover hover:scale-105 transition-transform"
+                      />
+                      <div className="p-4">
+                        <h3 className="font-bold text-lg text-[#4E0707] mb-2 truncate">
+                          {product.name}
+                        </h3>
+                        <p className="text-[#B4915B] font-semibold">
+                          ฿{product.price}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
           </div>
         </div>
       </section>

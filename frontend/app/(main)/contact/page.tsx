@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, CircleCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function ContactPage() {
   const [form, setForm] = useState({
@@ -69,29 +72,27 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="ชื่อ (First name)" required>
-                    <input
+                    <Input
                       type="text"
                       placeholder="ชื่อ"
                       value={form.firstName}
                       onChange={(e) => set("firstName", e.target.value)}
-                      className={inp}
                       required
                     />
                   </Field>
                   <Field label="นามสกุล (Last name)" required>
-                    <input
+                    <Input
                       type="text"
                       placeholder="นามสกุล"
                       value={form.lastName}
                       onChange={(e) => set("lastName", e.target.value)}
-                      className={inp}
                       required
                     />
                   </Field>
                 </div>
 
                 <Field label="เบอร์มือถือ" required>
-                  <input
+                  <Input
                     type="tel"
                     placeholder="08X-XXX-XXXX"
                     value={form.mobile}
@@ -105,28 +106,26 @@ export default function ContactPage() {
                     minLength={10}
                     pattern="[0-9]{10}"
                     title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก"
-                    className={inp}
                     required
                   />
                 </Field>
 
                 <Field label="อีเมล">
-                  <input
+                  <Input
                     type="email"
                     placeholder="email@example.com"
                     value={form.email}
                     onChange={(e) => set("email", e.target.value)}
-                    className={inp}
                   />
                 </Field>
 
                 <Field label="ข้อความ" required>
-                  <textarea
+                  <Textarea
                     rows={5}
                     placeholder="บอกเราว่าคุณสนใจอะไร หรือต้องการความช่วยเหลือเรื่องใด..."
                     value={form.message}
                     onChange={(e) => set("message", e.target.value)}
-                    className={`${inp} resize-none leading-relaxed`}
+                    className="resize-none leading-relaxed"
                     required
                   />
                 </Field>
@@ -233,9 +232,6 @@ export default function ContactPage() {
   );
 }
 
-const inp =
-  "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#B4915B]/30 focus:border-[#B4915B] transition-colors bg-white";
-
 function Field({
   label,
   required,
@@ -247,10 +243,10 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-500">
+      <Label className="text-xs font-semibold text-gray-500">
         {label}
         {required && <span className="text-[#4E0707] ml-0.5">*</span>}
-      </label>
+      </Label>
       {children}
     </div>
   );

@@ -21,6 +21,7 @@ interface DashboardData {
   pendingPaymentSlips: number;
   totalUsers: number;
   recentActivities: RecentActivity[];
+  platformEarnings: number;
 }
 
 function formatRelativeTime(dateString: string): string {
@@ -101,6 +102,13 @@ export default function AdminDashboard() {
       color: "text-purple-500",
       bgColor: "bg-purple-50 dark:bg-purple-950",
     },
+    {
+      title: "รายได้แพลตฟอร์ม (GP)",
+      value: data ? `${data.platformEarnings.toLocaleString()} บ.` : "-",
+      icon: <BarChart3 size={24} />,
+      color: "text-rose-500",
+      bgColor: "bg-rose-50 dark:bg-rose-950",
+    },
   ];
 
   return (
@@ -120,7 +128,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 mb-6 md:mb-8">
         {stats.map((stat, index) => (
           <div
             key={index}

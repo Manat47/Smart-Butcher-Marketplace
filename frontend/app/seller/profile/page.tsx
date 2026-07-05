@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { Save, Edit2, Plus, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function SellerProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -72,13 +76,13 @@ export default function SellerProfile() {
             />
             <div className="flex-1">
               {isEditing ? (
-                <input
+                <Input
                   type="text"
                   value={profile.storeName}
                   onChange={(e) =>
                     handleProfileChange("storeName", e.target.value)
                   }
-                  className="text-2xl font-bold w-full px-3 py-1 border border-gray-300 rounded-lg text-[#4E0707] focus:outline-none focus:border-[#B4915B]"
+                  className="text-2xl font-bold w-full text-[#4E0707] h-12"
                 />
               ) : (
                 <h2 className="text-2xl font-bold text-[#4E0707]">
@@ -142,109 +146,101 @@ export default function SellerProfile() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Owner Name
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       value={profile.ownerName}
                       onChange={(e) =>
                         handleProfileChange("ownerName", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Email
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="email"
                       value={profile.email}
                       onChange={(e) =>
                         handleProfileChange("email", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Phone
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="tel"
                       value={profile.phone}
                       onChange={(e) =>
                         handleProfileChange("phone", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Province
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       value={profile.province}
                       onChange={(e) =>
                         handleProfileChange("province", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Postal Code
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       value={profile.postalCode}
                       onChange={(e) =>
                         handleProfileChange("postalCode", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                    <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                       Tax ID
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       value={profile.taxId}
                       onChange={(e) =>
                         handleProfileChange("taxId", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                  <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                     Address
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={profile.address}
                     onChange={(e) =>
                       handleProfileChange("address", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                  <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                     Store Description
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
                     value={profile.description}
                     onChange={(e) =>
                       handleProfileChange("description", e.target.value)
                     }
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
-                  ></textarea>
+                  />
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -328,33 +324,30 @@ export default function SellerProfile() {
           <div className="mb-6 p-4 border-2 border-[#B4915B] rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                   Bank Name
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   placeholder="ธนาคารกรุงเทพ"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                   Account Number
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   placeholder="xxx-xx-xxxxx-x"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="block text-sm font-semibold text-[#4E0707] mb-2">
                   Account Holder Name
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   placeholder="Full name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
             </div>
@@ -398,19 +391,19 @@ export default function SellerProfile() {
         </h3>
         <div className="space-y-3">
           <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:border-[#B4915B] transition-colors cursor-pointer">
-            <input type="checkbox" defaultChecked className="w-4 h-4" />
+            <Checkbox defaultChecked />
             <span className="ml-3 font-semibold text-[#4E0707]">
               Receive order notifications
             </span>
           </label>
           <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:border-[#B4915B] transition-colors cursor-pointer">
-            <input type="checkbox" defaultChecked className="w-4 h-4" />
+            <Checkbox defaultChecked />
             <span className="ml-3 font-semibold text-[#4E0707]">
               Receive promotional updates
             </span>
           </label>
           <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:border-[#B4915B] transition-colors cursor-pointer">
-            <input type="checkbox" className="w-4 h-4" />
+            <Checkbox />
             <span className="ml-3 font-semibold text-[#4E0707]">
               Receive weekly sales report
             </span>

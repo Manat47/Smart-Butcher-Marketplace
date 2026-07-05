@@ -17,6 +17,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function SellerProducts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -252,24 +255,23 @@ export default function SellerProducts() {
           <form onSubmit={handleSaveProduct}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="text-[#4E0707] mb-2 block">
                   Product Name
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   value={productData.name}
                   onChange={(e) =>
                     setProductData({ ...productData, name: e.target.value })
                   }
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="text-[#4E0707] mb-2 block">
                   Category
-                </label>
+                </Label>
                 <Select
                   value={categoryId?.toString() ?? ""}
                   onValueChange={(val) => setCategoryId(Number(val))}
@@ -289,10 +291,10 @@ export default function SellerProducts() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="text-[#4E0707] mb-2 block">
                   Price (฿)
-                </label>
-                <input
+                </Label>
+                <Input
                   type="number"
                   min="0"
                   value={productData.price}
@@ -303,15 +305,14 @@ export default function SellerProducts() {
                     })
                   }
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="text-[#4E0707] mb-2 block">
                   Stock
-                </label>
-                <input
+                </Label>
+                <Input
                   type="number"
                   min="0"
                   value={productData.stockQuantity}
@@ -322,30 +323,29 @@ export default function SellerProducts() {
                     })
                   }
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
                 />
               </div>
 
               <div>
-                  <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                  <Label className="text-[#4E0707] mb-2 block">
                     Image {editingProductId && <span className="text-xs text-gray-500 font-normal">(Leave blank to keep existing)</span>}
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="file"
                     accept="image/*"
                     required={!editingProductId}
                     onChange={(e) =>
                       e.target.files && setImageFile(e.target.files[0])
                     }
-                    className="w-full border rounded-lg p-2"
+                    className="cursor-pointer"
                   />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-[#4E0707] mb-2">
+                <Label className="text-[#4E0707] mb-2 block">
                   Description
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   value={productData.description}
                   onChange={(e) =>
                     setProductData({
@@ -356,8 +356,7 @@ export default function SellerProducts() {
                   required
                   placeholder="Describe your product..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
-                ></textarea>
+                />
               </div>
             </div>
 
@@ -378,12 +377,12 @@ export default function SellerProducts() {
       {/* Search Bar */}
       <div className="relative">
         <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-        <input
+        <Input
           type="text"
           placeholder="Search by product name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#B4915B]"
+          className="pl-10 h-[42px]"
         />
       </div>
 

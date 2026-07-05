@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 import { AuthMeResponse } from "@/types/auth";
 import { SellerOrder, SellerOrderItem } from "@/types/seller";
@@ -257,18 +258,18 @@ export default function SellerOrders() {
       <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
+          <Input
             type="text"
             placeholder="Search by Order ID, Customer, or Product..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B4915B]/20 focus:border-[#B4915B] transition-all h-[46px]"
+            className="w-full pl-10 pr-4 bg-background"
           />
         </div>
         <div className="sm:w-64">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-full h-[46px] bg-gray-50 border-gray-200 hover:bg-gray-100/50 focus:ring-2 focus:ring-[#B4915B]/20 focus:border-[#B4915B] rounded-lg transition-all text-sm sm:text-base">
-              <div className="flex items-center gap-2 text-gray-600">
+            <SelectTrigger className="w-full bg-background text-sm sm:text-base">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <Filter className="w-4 h-4" />
                 <SelectValue placeholder="Select Status" />
               </div>

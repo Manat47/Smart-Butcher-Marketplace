@@ -47,12 +47,6 @@ export class OrderService {
           `สินค้า "${product.name}" ไม่พร้อมจำหน่ายในขณะนี้`,
         );
       }
-
-      if (item.quantity > product.stockQuantity) {
-        throw new BadRequestException(
-          `สินค้า "${product.name}" มีจำนวนไม่พอ (เหลือเพียง ${product.stockQuantity} ชิ้น)`,
-        );
-      }
     }
 
     const totalAmount = cart.cartItems.reduce((sum, item) => {
@@ -89,12 +83,21 @@ export class OrderService {
       });
 
       for (const item of cart.cartItems) {
-        await tx.product.update({
-          where: { id: item.productId },
+        const updated = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stockQuantity: { gte: item.quantity },
+          },
           data: {
             stockQuantity: { decrement: item.quantity },
           },
         });
+
+        if (updated.count === 0) {
+          throw new BadRequestException(
+            `ไม่สามารถสร้างคำสั่งซื้อได้ เนื่องจากสินค้าบางรายการมีการเปลี่ยนแปลงสต็อกกระทันหันและมีจำนวนไม่พอ`,
+          );
+        }
       }
 
       await tx.cart.update({
@@ -238,6 +241,15 @@ export class OrderService {
       );
     }
 
+    const pendingPayment = await this.prisma.payment.findFirst({
+      where: { orderId: order.id, status: 'PENDING' },
+    });
+    if (pendingPayment) {
+      throw new BadRequestException(
+        'ไม่สามารถยกเลิกได้ เนื่องจากคำสั่งซื้อนี้มีสลิปรอการตรวจสอบอยู่ กรุณารอผลการตรวจสอบสลิปก่อน',
+      );
+    }
+
     const cancelledOrder = await this.prisma.$transaction(async (tx) => {
       for (const item of order.orderItems) {
         await tx.product.update({
@@ -307,7 +319,6 @@ export class OrderService {
           },
         },
       },
-      // 🌟 เปลี่ยนจาก include ใหญ่ เป็น select เพื่อเจาะจงฟิลด์ที่จะใช้จริง
       select: {
         id: true,
         totalAmount: true,

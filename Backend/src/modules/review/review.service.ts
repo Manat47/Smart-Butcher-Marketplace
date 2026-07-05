@@ -25,10 +25,21 @@ export class ReviewService {
           productId: dto.productId,
           order: { userId },
         },
+        include: {
+          order: { select: { orderStatus: true } },
+        },
       });
       if (!orderItem) {
         throw new BadRequestException(
           'คุณไม่ได้สั่งซื้อสินค้านี้จากคำสั่งซื้อนี้',
+        );
+      }
+      if (
+        orderItem.order.orderStatus !== 'PAID' &&
+        orderItem.order.orderStatus !== 'COMPLETED'
+      ) {
+        throw new BadRequestException(
+          'คุณสามารถรีวิวได้เมื่อชำระเงินสำเร็จแล้วเท่านั้น',
         );
       }
     }

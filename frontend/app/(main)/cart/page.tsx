@@ -9,6 +9,7 @@ import { useCartItems } from "@/hooks/useCartItems";
 import { useCartStore } from "@/store/useCartStore";
 import { CartItem } from "@/types/cart";
 import { toast } from "react-toastify";
+import { Input } from "@/components/ui/input";
 
 const GRID_COLS = "grid-cols-[80px_1fr_140px_120px_120px_48px]";
 
@@ -99,14 +100,14 @@ function CartItemRow({
               <Minus size={12} />
             </button>
 
-            <input
+            <Input
               type="number"
               min="1"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onBlur={handleBlur}
               disabled={isUpdating}
-              className={`w-10 text-center font-bold text-[#4E0707] bg-transparent outline-none focus:ring-1 focus:ring-gray-200 rounded 
+              className={`h-7 w-10 px-0 py-0 text-center border-0 shadow-none font-bold text-[#4E0707] bg-transparent outline-none focus-visible:ring-1 focus-visible:ring-gray-200 rounded 
                 [-moz-appearance:_textfield] [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none 
                 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none 
                 transition-all ${isUpdating ? "opacity-50" : "opacity-100"}`}

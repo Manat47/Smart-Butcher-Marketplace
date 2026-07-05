@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { API_URL } from "@/lib/api";
 import { Store, Info, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function CreateStorePage() {
   const router = useRouter();
@@ -107,10 +110,10 @@ export default function CreateStorePage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Input */}
             <div className="flex flex-col gap-1.5 w-full">
-              <label htmlFor="name" className="text-sm font-bold text-gray-700">
+              <Label htmlFor="name" className="text-sm font-bold text-gray-700">
                 ชื่อร้านค้า <span className="text-red-500">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="name"
                 type="text"
                 value={name}
@@ -119,7 +122,7 @@ export default function CreateStorePage() {
                 required
                 disabled={isLoading}
                 maxLength={50}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm bg-[#fafaf8] focus:bg-white focus:outline-none focus:border-[#4E0707] focus:ring-1 focus:ring-[#4E0707] transition-all disabled:opacity-50"
+                className="h-12 rounded-xl bg-[#fafaf8] focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-[#4E0707] transition-all disabled:opacity-50"
               />
               <p className="text-xs text-gray-400 mt-1">
                 ตั้งชื่อร้านให้โดดเด่นและจดจำง่าย (สูงสุด 50 ตัวอักษร)
@@ -128,20 +131,20 @@ export default function CreateStorePage() {
 
             {/* Input */}
             <div className="flex flex-col gap-1.5 w-full">
-              <label
+              <Label
                 htmlFor="description"
                 className="text-sm font-bold text-gray-700"
               >
                 รายละเอียดร้านค้า (Optional)
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="อธิบายจุดเด่นของเนื้อที่ร้านคุณ หรือเรื่องราวของร้าน..."
                 rows={4}
                 disabled={isLoading}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm bg-[#fafaf8] focus:bg-white focus:outline-none focus:border-[#4E0707] focus:ring-1 focus:ring-[#4E0707] transition-all disabled:opacity-50 resize-none"
+                className="rounded-xl bg-[#fafaf8] focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-[#4E0707] transition-all disabled:opacity-50 resize-none"
               />
             </div>
 

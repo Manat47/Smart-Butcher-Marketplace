@@ -44,18 +44,29 @@ export class CartService {
     });
 
     if (existingCartItem) {
-      const newQuantity = existingCartItem.quantity + dto.quantity;
-      if (newQuantity > product.stockQuantity) {
-        throw new BadRequestException(
-          `สินค้ามีจำนวนไม่พอ (เหลือเพียง ${product.stockQuantity} ชิ้น)`,
-        );
-      }
+      return this.prisma.$transaction(async (tx) => {
+        const currentProduct = await tx.product.findUnique({
+          where: { id: dto.productId },
+          select: { stockQuantity: true },
+        });
 
-      return this.prisma.cartItem.update({
-        where: { id: existingCartItem.id },
-        data: {
-          quantity: newQuantity,
-        },
+        if (!currentProduct) {
+          throw new NotFoundException('ไม่พบสินค้าชิ้นนี้ในระบบ');
+        }
+
+        const newQuantity = existingCartItem.quantity + dto.quantity;
+        if (newQuantity > currentProduct.stockQuantity) {
+          throw new BadRequestException(
+            `สินค้ามีจำนวนไม่พอ (เหลือเพียง ${currentProduct.stockQuantity} ชิ้น)`,
+          );
+        }
+
+        return tx.cartItem.update({
+          where: { id: existingCartItem.id },
+          data: {
+            quantity: newQuantity,
+          },
+        });
       });
     } else {
       if (dto.quantity > product.stockQuantity) {
@@ -138,7 +149,7 @@ export class CartService {
   }
 
   async updateItemQuantity(userId: number, itemId: string, quantity: number) {
-    const currentQuantity = await this.prisma.cartItem.findFirst({
+    const currentItem = await this.prisma.cartItem.findFirst({
       where: {
         id: Number(itemId),
         cart: {
@@ -146,19 +157,41 @@ export class CartService {
           status: 'ACTIVE',
         },
       },
+      include: {
+        product: {
+          select: { stockQuantity: true, name: true },
+        },
+      },
     });
-    if (!currentQuantity) {
+    if (!currentItem) {
       throw new NotFoundException('ไม่พบรายการสินค้านี้ในตะกร้า');
     }
-    const updatedItem = await this.prisma.cartItem.update({
-      where: {
-        id: Number(itemId),
-      },
-      data: {
-        quantity: quantity,
-      },
+
+    return this.prisma.$transaction(async (tx) => {
+      const product = await tx.product.findUnique({
+        where: { id: currentItem.productId },
+        select: { stockQuantity: true, name: true },
+      });
+
+      if (!product) {
+        throw new NotFoundException('ไม่พบสินค้านี้ในระบบ');
+      }
+
+      if (quantity > product.stockQuantity) {
+        throw new BadRequestException(
+          `สินค้า "${product.name}" มีจำนวนไม่พอ (เหลือเพียง ${product.stockQuantity} ชิ้น)`,
+        );
+      }
+
+      return tx.cartItem.update({
+        where: {
+          id: Number(itemId),
+        },
+        data: {
+          quantity: quantity,
+        },
+      });
     });
-    return updatedItem;
   }
 
   async clearCart(userId: number) {
