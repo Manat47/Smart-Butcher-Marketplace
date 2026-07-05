@@ -25,7 +25,7 @@ export class StoreController {
   constructor(
     private readonly productsService: ProductsService,
     private readonly supabaseService: SupabaseService,
-  ) { }
+  ) {}
 
   @Get('products/my-store')
   async findMyStoreProducts(@Req() req: any, @Query('page') page?: string) {
@@ -45,23 +45,29 @@ export class StoreController {
     let imageUrl: string | undefined = undefined;
 
     if (file) {
-      const categoryName = await this.productsService.getCategoryNameById(createProductDto.categoryId);
+      const categoryName = await this.productsService.getCategoryNameById(
+        createProductDto.categoryId,
+      );
 
       const mapToFolder = (name: string) => {
         const map: Record<string, string> = {
-          'เนื้อสำหรับสเต็ก': 'steak',
-          'เนื้อวากิวคัดพิเศษ': 'wagyu',
-          'เนื้อดรายเอจ': 'dry-aged',
-          'เนื้อบด': 'minced-meat',
-          'อุปกรณ์และเครื่องเคียง': 'equipment',
-          'เนื้อแปรรูป': 'processed-meat',
+          เนื้อสำหรับสเต็ก: 'steak',
+          เนื้อวากิวคัดพิเศษ: 'wagyu',
+          เนื้อดรายเอจ: 'dry-aged',
+          เนื้อบด: 'minced-meat',
+          อุปกรณ์และเครื่องเคียง: 'essentials',
+          เนื้อแปรรูป: 'processed-meat',
         };
         const folder = map[name] || 'others';
         return `shop-pic/${folder}`;
       };
 
       const folderName = mapToFolder(categoryName);
-      const uploadedUrl = await this.supabaseService.uploadImage(file, 'products', folderName);
+      const uploadedUrl = await this.supabaseService.uploadImage(
+        file,
+        'products',
+        folderName,
+      );
       imageUrl = uploadedUrl ? uploadedUrl : undefined;
     }
 
@@ -80,23 +86,29 @@ export class StoreController {
 
     if (file) {
       const categoryId = updateProductDto.categoryId;
-      const categoryName = categoryId ? await this.productsService.getCategoryNameById(Number(categoryId)) : 'others';
+      const categoryName = categoryId
+        ? await this.productsService.getCategoryNameById(Number(categoryId))
+        : 'others';
 
       const mapToFolder = (name: string) => {
         const map: Record<string, string> = {
-          'เนื้อสำหรับสเต็ก': 'steak',
-          'เนื้อวากิวคัดพิเศษ': 'wagyu',
-          'เนื้อดรายเอจ': 'dry-aged',
-          'เนื้อบด': 'minced-meat',
-          'อุปกรณ์และเครื่องเคียง': 'essentials',
-          'เนื้อแปรรูป': 'processed-meat',
+          เนื้อสำหรับสเต็ก: 'steak',
+          เนื้อวากิวคัดพิเศษ: 'wagyu',
+          เนื้อดรายเอจ: 'dry-aged',
+          เนื้อบด: 'minced-meat',
+          อุปกรณ์และเครื่องเคียง: 'essentials',
+          เนื้อแปรรูป: 'processed-meat',
         };
         const folder = map[name] || 'others';
         return `shop-pic/${folder}`;
       };
 
       const folderName = mapToFolder(categoryName);
-      const uploadedUrl = await this.supabaseService.uploadImage(file, 'products', folderName);
+      const uploadedUrl = await this.supabaseService.uploadImage(
+        file,
+        'products',
+        folderName,
+      );
       imageUrl = uploadedUrl ? uploadedUrl : undefined;
 
       if (imageUrl) {
@@ -104,9 +116,12 @@ export class StoreController {
       }
     }
 
-    if (updateProductDto.categoryId) updateProductDto.categoryId = Number(updateProductDto.categoryId);
-    if (updateProductDto.price) updateProductDto.price = Number(updateProductDto.price);
-    if (updateProductDto.stockQuantity) updateProductDto.stockQuantity = Number(updateProductDto.stockQuantity);
+    if (updateProductDto.categoryId)
+      updateProductDto.categoryId = Number(updateProductDto.categoryId);
+    if (updateProductDto.price)
+      updateProductDto.price = Number(updateProductDto.price);
+    if (updateProductDto.stockQuantity)
+      updateProductDto.stockQuantity = Number(updateProductDto.stockQuantity);
 
     return this.productsService.update(Number(id), updateProductDto);
   }
