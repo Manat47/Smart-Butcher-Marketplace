@@ -9,11 +9,27 @@ import ShopProductImage from "./ShopProductImage";
 
 const PAGE_SIZE = 12;
 
+async function fetchWithRetry(url: string, options: RequestInit = {}) {
+  for (let i = 0; i < 60; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        return response;
+      }
+    } catch (error) {}
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  }
+  return fetch(url, options);
+}
+
 async function getMaxPriceLimit() {
   try {
-    const response = await fetch(`${API_URL}/users/products/max-price`, {
-      cache: "no-store",
-    });
+    const response = await fetchWithRetry(
+      `${API_URL}/users/products/max-price`,
+      {
+        cache: "no-store",
+      },
+    );
     if (!response.ok) return 99999;
     const data = await response.json();
     return data.maxPrice || data?._max?.price || 99999;
@@ -39,7 +55,7 @@ async function getProducts(params: {
   query.set("limit", String(PAGE_SIZE));
 
   try {
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `${API_URL}/users/products?${query.toString()}`,
       {
         cache: "no-store",
@@ -55,11 +71,9 @@ async function getProducts(params: {
     }
 
     const result = await response.json();
-
-    // Support both direct array response or { data, meta } structure
     const isArray = Array.isArray(result);
-    const productsData = isArray ? result : (result.data || []);
-    const metaData = isArray ? null : (result.meta || null);
+    const productsData = isArray ? result : result.data || [];
+    const metaData = isArray ? null : result.meta || null;
 
     return {
       data: productsData as ShopProduct[],
@@ -77,9 +91,12 @@ async function getProducts(params: {
 
 async function getCategories() {
   try {
-    const response = await fetch(`${API_URL}/users/products/categories`, {
-      cache: "no-store",
-    });
+    const response = await fetchWithRetry(
+      `${API_URL}/users/products/categories`,
+      {
+        cache: "no-store",
+      },
+    );
 
     if (!response.ok) return [];
 
@@ -122,7 +139,6 @@ export default async function ShopPage({
   const currentSelectedMaxPrice = params.maxPrice ?? maxPriceLimit.toString();
   const currentSelectedMinPrice = params.minPrice ?? "0";
 
-  // Build visible page numbers (max 5 around current)
   const totalPages = meta?.totalPages ?? 1;
   const pageWindow = 2;
   const startPage = Math.max(1, currentPage - pageWindow);
@@ -165,7 +181,13 @@ export default async function ShopPage({
                     defaultChecked={!selectedCategory}
                     className="h-4 w-4 cursor-pointer border-gray-300 text-[#B4915B] focus:ring-[#B4915B]"
                   />
-                  <span className={!selectedCategory ? "font-bold text-[#4E0707]" : ""}>ทั้งหมด</span>
+                  <span
+                    className={
+                      !selectedCategory ? "font-bold text-[#4E0707]" : ""
+                    }
+                  >
+                    ทั้งหมด
+                  </span>
                 </label>
                 {categories.map((category) => (
                   <label
@@ -179,7 +201,13 @@ export default async function ShopPage({
                       defaultChecked={selectedCategory === category.name}
                       className="h-4 w-4 cursor-pointer border-gray-300 text-[#B4915B] focus:ring-[#B4915B]"
                     />
-                    <span className={selectedCategory === category.name ? "font-bold text-[#4E0707]" : ""}>
+                    <span
+                      className={
+                        selectedCategory === category.name
+                          ? "font-bold text-[#4E0707]"
+                          : ""
+                      }
+                    >
                       {category.name}
                     </span>
                   </label>
@@ -217,8 +245,8 @@ export default async function ShopPage({
           </div>
 
           {productsResult.error ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-10 text-center text-red-700">
-              {productsResult.error}
+            <div className="flex-1 rounded-xl border border-dashed border-gray-300 bg-white p-10 flex items-center justify-center text-gray-500">
+              กำลังเชื่อมต่อฐานข้อมูล... กรุณารอสักครู่
             </div>
           ) : products.length === 0 ? (
             <div className="flex-1 rounded-xl border border-dashed border-gray-300 bg-white p-10 flex items-center justify-center text-gray-500">
@@ -237,7 +265,10 @@ export default async function ShopPage({
                       className="flex-1 cursor-pointer"
                     >
                       <div className="mb-3 aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
-                        <ShopProductImage src={product.imageUrl} alt={product.name} />
+                        <ShopProductImage
+                          src={product.imageUrl}
+                          alt={product.name}
+                        />
                       </div>
                       <p className="mb-1 truncate text-xs font-semibold text-[#B4915B]">
                         {product.category.name}
@@ -250,7 +281,11 @@ export default async function ShopPage({
                       </p>
                       <span className="mt-2 flex items-center gap-1 text-xs text-gray-500">
                         <StarIcon className="size-4 text-[#4E0707]" />
-                        {product.averageRating ? product.averageRating.toFixed(1) : "0"} ({product.reviewCount || 0}) | คงเหลือ {product.stockQuantity} ชิ้น
+                        {product.averageRating
+                          ? product.averageRating.toFixed(1)
+                          : "0"}{" "}
+                        ({product.reviewCount || 0}) | คงเหลือ{" "}
+                        {product.stockQuantity} ชิ้น
                       </span>
                     </Link>
                   </div>
