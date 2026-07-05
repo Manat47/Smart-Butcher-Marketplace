@@ -286,3 +286,21 @@ model Review {
   @@index([productId])
   @@index([userId])
 }
+
+model SystemSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique 
+  value     String   
+  updatedAt DateTime @updatedAt
+}
+
+model PlatformTransaction {
+  id          Int      @id @default(autoincrement())
+  orderId     Int?
+  amount      Float
+  description String
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
+
