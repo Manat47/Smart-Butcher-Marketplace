@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   Package,
+  Settings,
   Store,
   Users,
   X,
@@ -49,6 +50,11 @@ export function AdminSidebar() {
       icon: <BarChart3 size={20} />,
       label: "สถิติและรายได้",
       href: "/admin/analytics",
+    },
+    {
+      icon: <Settings size={20} />,
+      label: "ตั้งค่าระบบ",
+      href: "/admin/settings",
     },
   ];
 
