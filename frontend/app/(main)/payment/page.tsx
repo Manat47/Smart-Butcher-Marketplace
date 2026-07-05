@@ -7,6 +7,8 @@ import { FormField } from "@/components/payment/FormField";
 import { InfoBox } from "@/components/payment/InfoBox";
 import { QRCodeMock } from "@/components/payment/QRCodeMock";
 import { OrderSummary } from "@/components/payment/OrderSummary";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function CheckoutFlowPage() {
   const {
@@ -377,7 +379,7 @@ export default function CheckoutFlowPage() {
                     </strong>
                   </p>
 
-                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-[#fafaf8] cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden relative">
+                  <Label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-[#fafaf8] cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden relative">
                     {slipImage ? (
                       <img
                         src={slipImage}
@@ -393,13 +395,13 @@ export default function CheckoutFlowPage() {
                         <p className="text-xs mt-1">รองรับ JPG, PNG</p>
                       </div>
                     )}
-                    <input
+                    <Input
                       type="file"
                       accept="image/*"
                       className="hidden"
                       onChange={handleImageUpload}
                     />
-                  </label>
+                  </Label>
 
                   {slipImage && (
                     <button

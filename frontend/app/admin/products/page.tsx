@@ -14,6 +14,7 @@ import {
 import { API_URL } from "@/lib/api";
 import { AdminProduct, PaginatedMeta, Category, AdminProductFilters } from "@/types/admin";
 import { ProductTable } from "@/components/admin/product-table";
+import { Input } from "@/components/ui/input";
 
 
 const DEFAULT_FILTERS: AdminProductFilters = {
@@ -183,7 +184,7 @@ export default function AdminProductsPage() {
         {/* Search */}
         <div className="relative flex-1 min-w-0">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-          <input
+          <Input
             ref={searchRef}
             type="text"
             id="admin-products-search"
@@ -193,7 +194,7 @@ export default function AdminProductsPage() {
               setPendingFilters((prev) => ({ ...prev, q: e.target.value }))
             }
             onKeyDown={handleSearchKeyDown}
-            className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#4E0707]/40"
+            className="pl-9 bg-card"
           />
         </div>
 
@@ -293,7 +294,7 @@ export default function AdminProductsPage() {
               <label className="mb-1 block text-xs font-medium text-muted-foreground">
                 ราคาต่ำสุด (฿)
               </label>
-              <input
+              <Input
                 id="filter-min-price"
                 type="number"
                 min="0"
@@ -302,7 +303,7 @@ export default function AdminProductsPage() {
                 onChange={(e) =>
                   setPendingFilters((prev) => ({ ...prev, minPrice: e.target.value }))
                 }
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#4E0707]/40"
+                className="bg-background"
               />
             </div>
 
@@ -311,7 +312,7 @@ export default function AdminProductsPage() {
               <label className="mb-1 block text-xs font-medium text-muted-foreground">
                 ราคาสูงสุด (฿)
               </label>
-              <input
+              <Input
                 id="filter-max-price"
                 type="number"
                 min="0"
@@ -320,7 +321,7 @@ export default function AdminProductsPage() {
                 onChange={(e) =>
                   setPendingFilters((prev) => ({ ...prev, maxPrice: e.target.value }))
                 }
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#4E0707]/40"
+                className="bg-background"
               />
             </div>
           </div>

@@ -9,6 +9,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { API_URL } from "@/lib/api";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface UserItem {
   id: number;
@@ -304,28 +306,28 @@ export default function AdminUsersPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">
+                <Label className="block text-sm font-medium text-foreground mb-1.5">
                   รหัสผ่านใหม่
-                </label>
-                <input
+                </Label>
+                <Input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="อย่างน้อย 8 ตัวอักษร"
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="bg-background"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">
+                <Label className="block text-sm font-medium text-foreground mb-1.5">
                   ยืนยันรหัสผ่านใหม่
-                </label>
-                <input
+                </Label>
+                <Input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="กรอกรหัสผ่านใหม่อีกครั้ง"
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="bg-background"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleChangePassword();
                   }}
