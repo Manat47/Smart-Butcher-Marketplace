@@ -12,6 +12,7 @@ import { ReviewModule } from './modules/review/review.module';
 import { AiModule } from './modules/ai/ai.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AppService } from './app.service';
     StoreModule,
     ReviewModule,
     AiModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

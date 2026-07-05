@@ -374,6 +374,7 @@ export class StoreService {
       recentActivities,
       monthlyPaidOrders,
       topProductItems,
+      platformTransactionSummary,
     ] = await Promise.all([
       this.prisma.order.count(),
       this.prisma.order.aggregate({
@@ -457,10 +458,14 @@ export class StoreService {
         },
         take: 5,
       }),
+      this.prisma.platformTransaction.aggregate({
+        _sum: { amount: true },
+      }),
     ]);
 
     const grossRevenue = paidOrdersSummary._sum.totalAmount ?? 0;
     const storePayoutAmount = storePayoutSummary._sum.amount ?? 0;
+    const platformEarnings = platformTransactionSummary._sum.amount ?? 0;
     const netRevenue = grossRevenue - storePayoutAmount;
     const monthlySales = this.mapMonthlySales(monthlyPaidOrders);
     const bestSellingProducts =
@@ -471,6 +476,7 @@ export class StoreService {
       grossRevenue,
       storePayoutAmount,
       netRevenue,
+      platformEarnings,
       averageOrderValue: paidOrdersSummary._avg.totalAmount ?? 0,
       newCustomers,
       monthlySales,

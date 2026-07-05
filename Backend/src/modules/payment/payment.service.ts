@@ -91,6 +91,14 @@ export class PaymentService {
     ];
 
     if (status === 'VERIFIED') {
+      let platformFeePercentage = 10;
+      const setting = await this.prisma.systemSetting.findUnique({
+        where: { key: 'PLATFORM_FEE_PERCENTAGE' },
+      });
+      if (setting) {
+        platformFeePercentage = parseFloat(setting.value) || 10;
+      }
+
       const storeEarnings = new Map<number, number>();
       for (const item of payment.order.orderItems) {
         const storeId = item.product.storeId;
@@ -100,13 +108,19 @@ export class PaymentService {
         );
       }
 
-      for (const [storeId, amount] of storeEarnings.entries()) {
+      let totalPlatformFee = 0;
+
+      for (const [storeId, totalAmount] of storeEarnings.entries()) {
+        const feeAmount = (totalAmount * platformFeePercentage) / 100;
+        const storeAmount = totalAmount - feeAmount;
+        totalPlatformFee += feeAmount;
+
         prismaOperations.push(
           this.prisma.store.update({
             where: { id: storeId },
             data: {
-              balance: { increment: amount },
-              totalSales: { increment: amount },
+              balance: { increment: storeAmount },
+              totalSales: { increment: totalAmount },
             },
           }),
         );
@@ -114,8 +128,20 @@ export class PaymentService {
           this.prisma.storeTransaction.create({
             data: {
               storeId: storeId,
-              amount: amount,
-              description: `รายรับจากคำสั่งซื้อ #${payment.orderId}`,
+              amount: storeAmount,
+              description: `รายรับจากคำสั่งซื้อ #${payment.orderId} (หัก GP ${platformFeePercentage}%)`,
+            },
+          }),
+        );
+      }
+
+      if (totalPlatformFee > 0) {
+        prismaOperations.push(
+          this.prisma.platformTransaction.create({
+            data: {
+              orderId: payment.orderId,
+              amount: totalPlatformFee,
+              description: `Platform GP Fee ${platformFeePercentage}% for Order #${payment.orderId}`,
             },
           }),
         );
