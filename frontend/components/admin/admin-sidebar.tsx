@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { API_URL } from "@/lib/api";
 import {
   BarChart3,
   Home,
@@ -20,6 +21,27 @@ import { AdminMenuItem } from "@/types/admin";
 export function AdminSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    const fetchPendingOrders = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+        const response = await fetch(`${API_URL}/admin/orders`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const count = data.filter((o: any) => o.orderStatus === "PENDING").length;
+          setPendingCount(count);
+        }
+      } catch (error) {
+        console.error("Failed to fetch pending orders", error);
+      }
+    };
+    fetchPendingOrders();
+  }, [pathname]); // Re-fetch occasionally when navigating around admin panel
 
   const menuItems: AdminMenuItem[] = [
     {
@@ -88,15 +110,22 @@ export function AdminSidebar() {
                 <Link
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 lg:px-4 lg:py-3 text-sm lg:text-base transition-colors ${active
+                  className={`flex items-center justify-between rounded-lg px-3 py-2.5 lg:px-4 lg:py-3 text-sm lg:text-base transition-colors ${active
                       ? "bg-[#B4915B] font-medium text-white"
                       : "text-gray-200 hover:bg-[#6B0909]"
                     }`}
                 >
-                  <span className={active ? "text-white" : "text-gray-200"}>
-                    {item.icon}
-                  </span>
-                  <span className="font-medium">{item.label}</span>
+                  <div className="flex items-center gap-3">
+                    <span className={active ? "text-white" : "text-gray-200"}>
+                      {item.icon}
+                    </span>
+                    <span className="font-medium">{item.label}</span>
+                  </div>
+                  {item.href === "/admin/orders" && pendingCount > 0 && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow-sm ring-2 ring-[#4E0707]">
+                      {pendingCount}
+                    </span>
+                  )}
                 </Link>
               </li>
             );
