@@ -34,7 +34,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left — Contact Form */}
           <div className="border border-gray-200 rounded-xl bg-white p-6 flex flex-col">
             <p className="text-sm font-bold text-[#4E0707] mb-5">
@@ -70,7 +70,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="ชื่อ (First name)" required>
                     <Input
                       type="text"
