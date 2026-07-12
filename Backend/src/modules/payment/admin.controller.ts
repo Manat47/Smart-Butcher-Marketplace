@@ -1,7 +1,7 @@
 import { Body, Controller, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { VerifyPaymentDto } from './dto/verify-payment.dto';
-import { AdminGuard } from './guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { PaymentService } from './payment.service';
 
 @Controller('admin')

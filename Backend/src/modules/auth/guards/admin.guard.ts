@@ -19,7 +19,6 @@ export class AdminGuard implements CanActivate {
       throw new UnauthorizedException('ไม่สามารถตรวจสอบบทบาท');
     }
 
-    // Check if user is admin
     if (request.user.role !== 'ADMIN') {
       throw new ForbiddenException('เฉพาะผู้ดูแลระบบเท่านั้น');
     }

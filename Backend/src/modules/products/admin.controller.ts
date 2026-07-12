@@ -12,7 +12,7 @@ import {
 import { UpdateProductDto, GetAdminProductsDto } from './dto';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AdminGuard } from '../guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
