@@ -221,7 +221,7 @@ export default function RegisterPage() {
             </button>
           </div>
 
-          <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1 px-1">
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 px-1">
             <RequirementItem label="อย่างน้อย 8 ตัวอักษร" met={checks.length} />
             <RequirementItem label="ตัวเลข (0-9)" met={checks.hasNumber} />
             <RequirementItem
@@ -250,7 +250,7 @@ export default function RegisterPage() {
           href="/login"
           className="font-medium text-[#4E0707] hover:text-[#4E0707]"
         >
-          Login
+          เข้าสู่ระบบ
         </Link>
       </p>
     </div>

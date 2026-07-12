@@ -7,7 +7,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from '../guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangeUserPasswordDto } from './dto/change-user-password.dto';
 import { UsersService } from './user.service';

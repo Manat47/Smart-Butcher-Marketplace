@@ -39,4 +39,8 @@ export class GetProductsFilterDto {
   @IsInt()
   @Min(1)
   limit?: number;
+
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
 }

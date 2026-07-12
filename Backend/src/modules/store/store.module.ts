@@ -6,7 +6,7 @@ import { StoreController } from './store.controller';
 import { PrismaModule } from '../../prisma-db/prisma.module';
 import { UserController } from './user.controller';
 import { AdminController } from './admin.controller';
-import { AdminGuard } from '../guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 
 @Module({
   imports: [PrismaModule, AuthModule],

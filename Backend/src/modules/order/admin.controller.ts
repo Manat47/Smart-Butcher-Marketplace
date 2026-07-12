@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AdminGuard } from './guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { OrderService } from './order.service';
 
 @Controller('admin')
