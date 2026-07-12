@@ -238,7 +238,7 @@ export default async function ShopPage({
               ผลลัพธ์สำหรับ <span className="text-[#4E0707]">{title}</span>
             </h2>
             {meta && (
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-gray-400 hidden sm:block">
                 ทั้งหมด {meta.total} รายการ
               </span>
             )}

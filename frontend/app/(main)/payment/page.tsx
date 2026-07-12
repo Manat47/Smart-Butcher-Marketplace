@@ -344,22 +344,23 @@ export default function CheckoutFlowPage() {
                     </strong>
                     <br />
                     <span className="text-xs mt-1 block">
-                      กรุณาบันทึกภาพหน้าจอ (สลิป) เมื่อชำระเงินสำเร็จ
+                      กรุณาบันทึกภาพหน้าจอ (สลิป)
+                      เมื่อชำระเงินสำเร็จและกดปุ่มแนปสลิป
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
                   <button
                     onClick={() => setStep("shipping")}
-                    className="text-sm font-medium text-gray-500 hover:text-[#4E0707]"
+                    className="text-sm  font-medium text-gray-500 hover:text-[#4E0707]"
                   >
-                    ← กลับไปหน้าจัดส่ง
+                    ← ย้อนกลับ
                   </button>
                   <button
                     onClick={() => setStep("upload")}
                     className="bg-[#4E0707] hover:bg-[#3D0505] text-white font-bold py-3 px-6 rounded-xl text-sm"
                   >
-                    ชำระเงินแล้ว แนบสลิป →
+                    แนบสลิป →
                   </button>
                 </div>
               </div>
