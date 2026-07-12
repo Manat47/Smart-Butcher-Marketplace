@@ -37,7 +37,7 @@ export default async function StorePage({
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-10 flex-1 flex flex-col gap-8">
-      <section className="grid grid-cols-[1fr_3fr] border border-gray-200 rounded-xl overflow-hidden">
+      <section className="flex flex-col md:grid md:grid-cols-[1fr_3fr] border border-gray-200 rounded-xl overflow-hidden">
         {/* Left */}
         <div className="bg-[#1a0202] flex flex-col items-center justify-center gap-4 px-5 py-8">
           <div className="w-24 h-24 rounded-full border-2 border-[#B4915B] overflow-hidden bg-[#4E0707] flex items-center justify-center">
@@ -65,7 +65,7 @@ export default async function StorePage({
 
         <div className="bg-white p-6 flex flex-col gap-5">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
                 val: store.productCount.toLocaleString(),
