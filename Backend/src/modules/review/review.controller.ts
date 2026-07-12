@@ -27,4 +27,9 @@ export class ReviewController {
   findByProduct(@Param('productId', ParseIntPipe) productId: number) {
     return this.reviewService.findByProduct(productId);
   }
+
+  @Get()
+  findLatest() {
+    return this.reviewService.findLatest();
+  }
 }

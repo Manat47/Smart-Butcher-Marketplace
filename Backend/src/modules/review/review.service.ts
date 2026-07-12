@@ -89,4 +89,22 @@ export class ReviewService {
       },
     });
   }
+
+  async findLatest(limit = 10) {
+    return this.prisma.review.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        point: true,
+        description: true,
+        createdAt: true,
+        user: {
+          select: {
+            fullName: true,
+          },
+        },
+      },
+    });
+  }
 }

@@ -67,9 +67,20 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    document.documentElement.classList.add("snap-y", "snap-mandatory");
+    const applySnap = () => {
+      if (window.innerWidth >= 768) {
+        document.documentElement.classList.add("snap-y", "snap-mandatory");
+      } else {
+        document.documentElement.classList.remove("snap-y", "snap-mandatory");
+      }
+    };
+    
+    applySnap();
+    window.addEventListener("resize", applySnap);
+
     return () => {
       document.documentElement.classList.remove("snap-y", "snap-mandatory");
+      window.removeEventListener("resize", applySnap);
     };
   }, []);
 
@@ -80,7 +91,7 @@ export default function Home() {
       try {
         const [catRes, prodRes, revRes] = await Promise.all([
           fetch(`${API_URL}/users/products/categories`),
-          fetch(`${API_URL}/users/products`),
+          fetch(`${API_URL}/users/products?sortBy=popular&limit=4`),
           fetch(`${API_URL}/reviews`),
         ]);
 
@@ -93,16 +104,20 @@ export default function Home() {
 
           if (revRes.ok) {
             const revs = await revRes.json();
-            const mappedRevs = revs.map((r: any) => ({
+            const filteredRevs = revs.filter(
+              (r: any) => r.point === 5 && r.description && r.description.trim() !== ""
+            );
+            const mappedRevs = filteredRevs.map((r: any) => ({
               id: r.id,
               name: r.user.fullName,
               rating: r.point,
               comment: r.description,
-              image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${r.user.fullName}`,
+              image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(r.user.fullName)}`,
               alt: "avatar",
             }));
-            if (mappedRevs.length > 0 && isMounted) {
-              setTestimonials(mappedRevs);
+            if (isMounted) {
+              const combinedRevs = [...mappedRevs, ...fallbackTestimonials].slice(0, 5);
+              setTestimonials(combinedRevs);
             }
           }
           // เลิกหมุน Loading ก็ต่อเมื่อดึงข้อมูลสำเร็จ 100% เท่านั้น
