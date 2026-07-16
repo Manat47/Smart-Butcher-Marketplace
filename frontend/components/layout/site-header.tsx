@@ -32,12 +32,15 @@ export function SiteHeader() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/auth/me`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/auth/me`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+            },
           },
-        });
+        );
 
         if (response.ok) {
           const userData = await response.json();
@@ -100,8 +103,7 @@ export function SiteHeader() {
           />
         </div>
 
-        {/* Center: Navigation Menu — Desktop only */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-8">
+        <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center space-x-8">
           <Link
             href="/"
             className="hover:text-[#B4915B] transition-colors font-medium"
@@ -109,12 +111,12 @@ export function SiteHeader() {
             HOME
           </Link>
 
-          {/* SHOP Menu with Categories Dropdown */}
-          <div className="relative group/shop py-2">
-            <button className="flex items-center space-x-1 hover:text-[#B4915B] transition-colors font-medium cursor-pointer">
+          {/* Categories Dropdown */}
+          <div className="relative group/shop py-2" tabIndex={0}>
+            <button className="flex items-center space-x-1 hover:text-[#B4915B] group-focus-within/shop:text-[#B4915B] transition-colors font-medium cursor-pointer focus:outline-none">
               <span>SHOP</span>
               <svg
-                className="w-4 h-4 transition-transform group-hover/shop:rotate-180 duration-200"
+                className="w-4 h-4 transition-transform group-hover/shop:rotate-180 group-focus-within/shop:rotate-180 duration-200"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -129,7 +131,7 @@ export function SiteHeader() {
             </button>
 
             {/* Dropdown Items */}
-            <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-52 bg-white rounded-lg shadow-xl py-2 z-50 invisible group-hover/shop:visible opacity-0 group-hover/shop:opacity-100 transition-all duration-200 border border-gray-100">
+            <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-52 bg-white rounded-lg shadow-xl py-2 z-50 invisible group-hover/shop:visible group-focus-within/shop:visible opacity-0 group-hover/shop:opacity-100 group-focus-within/shop:opacity-100 transition-all duration-200 border border-gray-100">
               {categories.map((category) => (
                 <Link
                   key={category.slug}
@@ -150,14 +152,12 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* Right: Search, Profile, Cart + Mobile hamburger */}
+        {/* Search, Profile, Cart + Mobile hamburger */}
         <div className="flex items-center justify-end space-x-3 md:space-x-4 sm:min-w-[18rem]">
           <form
             onSubmit={handleSearch}
             className="relative hidden sm:block w-full max-w-[15rem]"
           >
-            {" "}
-            {/* ใช้ max-w เพื่อคุมความยาว */}
             <input
               type="search"
               value={searchTerm}
@@ -187,12 +187,12 @@ export function SiteHeader() {
           </Link>
 
           {/* User dropdown — Desktop */}
-          <div className="relative group hidden md:block">
-            <button className="hover:text-[#B4915B] transition-colors p-2 flex items-center">
+          <div className="relative group hidden lg:block" tabIndex={0}>
+            <button className="hover:text-[#B4915B] group-focus-within:text-[#B4915B] transition-colors p-2 flex items-center focus:outline-none">
               <User size={20} />
             </button>
 
-            <div className="absolute right-0 mt-0 w-48 bg-white rounded-lg shadow-xl py-2 z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 border border-gray-100">
+            <div className="absolute right-0 mt-0 w-48 bg-white rounded-lg shadow-xl py-2 z-50 invisible group-hover:visible group-focus-within:visible opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-200 border border-gray-100">
               {isLoading ? (
                 <div className="px-4 py-2 text-sm text-[#4E0707]/70">
                   Checking account...
@@ -272,7 +272,7 @@ export function SiteHeader() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 hover:text-[#B4915B] transition-colors"
+            className="lg:hidden p-2 hover:text-[#B4915B] transition-colors"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -282,7 +282,7 @@ export function SiteHeader() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-[#4E0707] px-4 pb-4 space-y-3">
+        <div className="lg:hidden border-t border-white/10 bg-[#4E0707] px-4 pb-4 space-y-3">
           {/* Mobile Search */}
           <form onSubmit={handleSearch} className="relative sm:hidden">
             <input
