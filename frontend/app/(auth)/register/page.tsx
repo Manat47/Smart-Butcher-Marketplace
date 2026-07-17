@@ -64,7 +64,7 @@ export default function RegisterPage() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3001/auth/register", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -136,7 +136,7 @@ export default function RegisterPage() {
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Full Name
+              ชื่อ-นามสกุล
             </label>
             <input
               type="text"
@@ -150,7 +150,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Email
+            อีเมล์
           </label>
           <input
             type="email"
@@ -168,7 +168,7 @@ export default function RegisterPage() {
         </div>
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700">
-            Password
+            รหัสผ่าน
           </label>
           <div className="relative mt-1">
             <input
@@ -196,7 +196,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Confirm Password
+            ยืนยันรหัสผ่าน
           </label>
           <div className="relative mt-1">
             <input
@@ -221,7 +221,7 @@ export default function RegisterPage() {
             </button>
           </div>
 
-          <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1 px-1">
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 px-1">
             <RequirementItem label="อย่างน้อย 8 ตัวอักษร" met={checks.length} />
             <RequirementItem label="ตัวเลข (0-9)" met={checks.hasNumber} />
             <RequirementItem
@@ -245,12 +245,12 @@ export default function RegisterPage() {
       </form>
 
       <p className="text-center text-sm text-gray-600">
-        Already have an account?{" "}
+        คุณมีบัญชีอยู่แล้วใช่ไหม?{" "}
         <Link
           href="/login"
           className="font-medium text-[#4E0707] hover:text-[#4E0707]"
         >
-          Login
+          เข้าสู่ระบบ
         </Link>
       </p>
     </div>
